@@ -1,0 +1,2807 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Down with Nouns!</title>
+    <style>
+        .box {
+            
+            padding: 20px;
+            width: 500px;
+            margin: auto;
+            text-align: center;
+            background-color: lightblue;
+            
+        }
+        .choice {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #score {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+            width: 70px;
+            height: 50px;
+            line-height: 50px;
+            background-color: black;
+            color: white;
+        }
+        #btn1, #btn2 {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        #submitInstructions,#principalParts {
+            font-size: 20px;
+            margin: 20px 0;
+            border: 2px solid black;
+        }
+
+
+        # #errorMessage, #latinSentence, #latinNoun, #newNounTB, #latinNoun2, #newNounTB2,#latinVerb,  #btnA1, #btnA2, #btnA3, #btnA4, #btnB1, #btnB2, #btnB3, #btnB4 {
+            font-size: 20px;
+            margin: 20px 0;
+            
+            
+        }
+
+
+
+        #newNounTB, #newNounTB2, #newVerbTB {
+                font-size: 16px;
+                margin: 20px 0;
+            }
+        
+        
+        }
+
+        
+
+    </style>
+</head>
+<body>
+<!-- Score Box -->
+ <div class="box">
+<label  id="score" for="score">Score</label>  <br>
+<p id="errorMessage"></p>
+<p id="submitInstructions">Welcome to MadVerber!</p>
+<p class = "solid" style= "display:none" id="principalParts">Hi</p>
+
+
+<p id="latinSentence"></p>
+
+<button  onclick="startGame()" style= 'color:black; background-color:yellow' id="btn1">Start</button>
+ <button onclick="endGame()" style= "display:none" id="btn2">No</button>
+
+<!-- Input Labels and Textboxes
+  <label   style="display: none" id="latinNoun" for="latinNoun">Enter a Latin Noun - Person</label> 
+  <input style="display: none; width: 400px;""  type ="text" id="newNounTB" name= "newNounTB"> <br> <br>
+  <label  style="display: none" id="latinNoun2" for="latinNoun2">Enter a Latin Noun - Place or Thing</label> 
+  <input style="display: none; width: 400px;""  type ="text" id="newNounTB2" name= "newNounTB2"> <br> <br>
+  <label   style="display: none" id="latinVerb" for="latinVerb">Enter a Transitive Latin Verb</label> 
+  <input style="display: none; width: 400px;""  type ="text" id="newVerbTB" name= "newVerbTB"> <br> <br>
+ 
+ 
+ -->
+
+<button  style= "display:none" id="btnA1">Submit</button>
+<button  style= "display:none" id="btnA2">Submit</button>
+<button " style= "display:none" id="btnA3">Submit</button>
+<button  style= "display:none" id="btnA4">Submit</button>
+
+<button class="choice"  style="display:none" id="btnB1">0</button>
+<button class="choice"  style="display:none" id="btnB2">1</button>
+<button class="choice"  style="display:none" id="btnB3">2</button>
+<button class="choice"  style="display:none" id="btnB4">3</button>
+
+</div>
+
+
+<script>
+/*
+User Inputs 1st noun
+First Click on Button 1 loads user's noun and triggers userInputValues()
+User Inputs 2nd noun
+Second Click on Button starts startGame() or showQuestion()
+Buttons 1A-4A load
+Click on correct button triggers CorrectAnswer() and loads userInputValues()
+//
+*/
+
+
+class Noun {
+  constructor(nominative, genitive, gender, singMeaning, plMeaning){
+    this.nominative = nominative;
+    this.genitive = genitive;
+    this.gender = gender;
+    this.singMeaning = singMeaning;
+    this.plMeaning = plMeaning;
+  }
+
+  //NOMINATIVE
+
+  get nominativeSing(){
+    return this.singNominative();
+  }
+
+  singNominative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.nominative;
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēs";
+    } else if (this.genitive.slice(-1,) == "i"){
+      return this.nominative;
+    } else if (this.genitive.slice(-2,) == "is"){
+        if (this.gender == "n"){
+          return this.nominative;
+        } else {
+          return this.nominative;
+        }
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.nominative;
+    }
+  }
+
+  get nominativeSingTrans(){
+    return this.singNominativeTrans();
+  }
+
+  singNominativeTrans(){
+    return this.singMeaning;
+  }
+
+    //GENITIVE
+
+  get genitiveSing(){
+      return this.singGenitive();
+  }
+
+  singGenitive(){
+    if (this.genitive.slice(-2,) == "ae"){
+        return this.genitive;
+    } else if (this.genitive.slice(-2,) == "ei"){
+        return this.genitive.slice(0,-2) + "ēī";
+    } else if (this.genitive.slice(-1,) == "i"){
+        return this.genitive.slice(0,-1) + "ī";
+    } else if (this.genitive.slice(-2,) == "is"){
+        return this.genitive;
+    } else if (this.genitive.slice(-2,) == "us"){
+        return this.genitive.slice(0,-2) + "ūs";
+    }
+  }
+
+  get genitiveSingTrans(){
+      return this.singGenitiveTrans();
+  }
+
+  singGenitiveTrans(){
+      return " of the " + this.singMeaning;
+  }
+
+    //DATIVE
+
+  get dativeSing(){
+      return this.singDative();
+  }
+
+  singDative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive;
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēī";
+    } else if (this.genitive.slice(-1,) == "i"){
+      return this.genitive.slice(0,-1) + "ō";
+    } else if (this.genitive.slice(-2,) == "is"){
+      return this.genitive.slice(0,-2) + "ī";
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ūi";
+    }
+  }
+
+  get dativeSingTrans(){
+    return this.singDativeTrans();
+  }
+
+  singDativeTrans(){
+    return " to the " + this.singMeaning;
+  }
+
+  //ACCUSATIVE
+
+  get accusativeSing(){
+    return this.singAccusative();
+  }
+
+  singAccusative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "am";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "em";
+    } else if (this.gender == "n" && this.genitive.slice(-1,) == "i"){
+      return this.nominative;
+    } else if (this.genitive.slice(-1,) == "i"){
+        return this.genitive.slice(0,-1) + "um";
+    } else if (this.genitive.slice(-2,) == "is"){
+        if (this.gender == "n"){
+          return this.nominative;
+        } else {
+          return this.genitive.slice(0,-2) + "em";
+        }
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "um";
+    }
+  }
+
+  get accusativeSingTrans(){
+    return this.singAccusativeTrans();
+  }
+
+  singAccusativeTrans(){
+      return this.singMeaning;
+  }
+
+  //ablative
+
+  get ablativeSing(){
+    return this.singAblative();
+  }
+
+  singAblative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "ā";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ē";
+    } else if (this.genitive.slice(-1,) == "i"){
+      return this.genitive.slice(0,-1) + "ō";
+    } else if (this.genitive.slice(-2,) == "is"){
+      if (this.gender == "n"){
+        if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
+          return this.genitive.slice(0,-2) + "ī";
+        } else {
+        return this.genitive.slice(0,-2) + "e";
+        }
+      } else {
+        return this.genitive.slice(0,-2) + "e";
+      }
+
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ū";
+    }
+  }
+
+  get ablativeSingTrans(){
+    return this.singAblativeTrans();
+  }
+
+  singAblativeTrans(){
+    return " by " + this.singMeaning;
+  }
+
+  //Vocative
+  get vocativeSing(){
+    return this.singVocative();
+  }
+
+  singVocative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.nominative;
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēs";
+    } else if (this.genitive.slice(-1,) == "i"){
+      if (this.gender == "n"){
+        return this.nominative;
+      } else if (this.gender == "m"){
+          if (this.nominative.slice(-3,) == "ius"){
+            return this.genitive.slice(0,-2);
+          } else if (this.nominative.slice(-2,) == "us"){
+            return this.genitive.slice(0,-1) + "e";
+          } else {
+            return this.nominative;
+          }
+      }
+    } else if (this.genitive.slice(-2,) == "is"){
+        return this.nominative;
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.nominative;
+    }
+  }
+
+  get vocativeSingTrans(){
+    return this.singVocativeTrans();
+  }
+
+  singVocativeTrans(){
+      let vocative = this.singMeaning;
+      return vocative[0] + vocative.substring(1) + "!";
+    }
+
+
+  //NOMINATIVE PLURAL
+
+  get nominativePl(){
+    return this.plNominative();
+  }
+
+  plNominative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "ae";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēs";
+    } else if (this.genitive.slice(-1,) == "i"){
+      if (this.gender == "n"){
+        return this.genitive.slice(0,-1) + "a";
+      } else {
+        return this.genitive.slice(0,-1) + "ī";
+      }
+    } else if (this.genitive.slice(-2,) == "is"){
+        if (this.gender == "n"){
+          if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
+            return this.genitive.slice(0,-2) + "ia";
+          } else {
+          return this.genitive.slice(0,-2) + "a";
+          }
+        } else {
+          return this.genitive.slice(0,-2) + "ēs";
+        }
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ūs";
+    }
+  }
+
+  get nominativePlTrans(){
+    return this.plNominativeTrans();
+  }
+
+  plNominativeTrans(){
+    return this.plMeaning;
+  }
+
+    //GENITIVE
+
+  get genitivePl(){
+      return this.plGenitive();
+  }
+
+  plGenitive(){
+    if (this.genitive.slice(-2,) == "ae"){
+        return this.genitive.slice(0,-2) + "ārum";
+    } else if (this.genitive.slice(-2,) == "ei"){
+        return this.genitive.slice(0,-2) + "ērum";
+    } else if (this.genitive.slice(-1,) == "i"){
+        return this.genitive.slice(0,-1) + "ōrum";
+    } else if (this.genitive.slice(-2,) == "is"){
+        if (this.nominative == "canis"){
+            return this.genitive.slice(0,-2) + "um";
+        } else if (this.nominative.slice(-2,) == "rb" || this.nominative.slice(-2,) == "nt" || this.nominative.slice(-2,) == "rt"){
+        // if (this.nominative.slice(-2,) == "rb" || "nt" || "rt"){
+          return this.genitive.slice(0,-2) + "ium";
+        } else if (this.gender == "n"){
+            if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
+              return this.genitive.slice(0,-2) + "ium";
+            } else {
+              return this.genitive.slice(0,-2) + "um";
+            }
+        } else if (this.nominative == this.genitive){
+          return this.genitive.slice(0,-2) + "ium";
+        } else {
+          return this.genitive.slice(0,-2) + "um";
+        }
+    } else if (this.genitive.slice(-2,) == "us"){
+        return this.genitive.slice(0,-2) + "uum";;
+    }
+  }
+
+  get genitivePlTrans(){
+      return this.plGenitiveTrans();
+  }
+
+  plGenitiveTrans(){
+      return " of the " + this.plMeaning;
+  }
+
+    //DATIVE
+
+  get dativePl(){
+      return this.plDative();
+  }
+
+  plDative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "īs";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēbus";
+    } else if (this.genitive.slice(-1,) == "i"){
+      return this.genitive.slice(0,-1) + "īs";
+    } else if (this.genitive.slice(-2,) == "is"){
+      return this.genitive.slice(0,-2) + "ibus";
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ibus";
+    }
+  }
+
+  get dativePlTrans(){
+    return this.plDativeTrans();
+  }
+
+  plDativeTrans(){
+    return " to the " + this.plMeaning;
+  }
+
+  //ACCUSATIVE
+
+  get accusativePl(){
+    return this.plAccusative();
+  }
+
+  plAccusative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "ās";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēs";
+    } else if (this.genitive.slice(-1,) == "i"){
+      if (this.gender == "n"){
+        return this.genitive.slice(0,-1) + "a";
+      } else {
+        return this.genitive.slice(0,-1) + "ōs";
+      }
+    } else if (this.genitive.slice(-2,) == "is"){
+        if (this.gender == "n"){
+          console.log(this.nominative.slice(-2,));
+          if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
+            return this.genitive.slice(0,-2) + "ia";
+          } else {
+          return this.genitive.slice(0,-2) + "a";
+          }
+        } else {
+          return this.genitive.slice(0,-2) + "ēs";
+        }
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ūs";
+    }
+  }
+
+  get accusativePlTrans(){
+    return this.plAccusativeTrans();
+  }
+
+  plAccusativeTrans(){
+      return this.plMeaning;
+  }
+
+  //ablative
+
+  get ablativePl(){
+    return this.plAblative();
+  }
+
+  plAblative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "īs";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēbus";
+    } else if (this.genitive.slice(-1,) == "i"){
+      return this.genitive.slice(0,-1) + "īs";
+    } else if (this.genitive.slice(-2,) == "is"){
+      return this.genitive.slice(0,-2) + "ibus";
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ibus";
+    }
+  }
+
+  get ablativePlTrans(){
+    return this.plAblativeTrans();
+  }
+
+  plAblativeTrans(){
+    return " by the " + this.plMeaning;
+  }
+
+  //Vocative Plural
+
+  get vocativePl(){
+    return this.plVocative();
+  }
+
+  plVocative(){
+    if (this.genitive.slice(-2,) == "ae"){
+      return this.genitive.slice(0,-2) + "ae";
+    } else if (this.genitive.slice(-2,) == "ei"){
+      return this.genitive.slice(0,-2) + "ēs";
+    } else if (this.genitive.slice(-1,) == "i"){
+      if (this.gender == "n"){
+        return this.genitive.slice(0,-1) + "a";
+      } else {
+        return this.genitive.slice(0,-1) + "ī";
+      }
+    } else if (this.genitive.slice(-2,) == "is"){
+      if (this.gender == "n"){
+        if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
+          return this.genitive.slice(0,-2) + "ia";
+        } else {
+        return this.genitive.slice(0,-2) + "a";
+        }
+      } else {
+        return this.genitive.slice(0,-2) + "ēs";
+      }
+    } else if (this.genitive.slice(-2,) == "us"){
+      return this.genitive.slice(0,-2) + "ūs";
+    }
+  }
+
+  get vocativePlTrans(){
+    return this.plVocativeTrans();
+  }
+
+  plVocativeTrans(){
+    let vocative = this.plMeaning;
+    return vocative[0] + vocative.substring(1) + "!";
+  }
+
+}
+
+
+//VERBS
+
+
+class Verb {
+  constructor(first, second, third, fourth, verb, verbing, verbed,ppVerb){
+  this.first = first;
+  this.second = second;
+  this.third = third;
+  this.fourth = fourth;
+  this.verb = verb;
+  this.verbing = verbing;
+  this.verbed = verbed;
+  this.ppVerb = ppVerb;
+  }
+
+  //PRESENT ACTIVE INFINITIVE
+
+  get actInfPres(){
+    return this.presActInf();
+  }
+
+  presActInf(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "āre";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second;
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second;
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second;
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īre";
+    }
+  }
+
+  get actInfPresTrans(){
+    return this.presActInfTrans();
+  }
+
+  presActInfTrans(){
+    return " to " +  this.verb;
+  }
+
+  //SINGULAR IMPERATIVE
+
+  get imperativeSing(){
+    return this.singImperative();
+  }
+
+  singImperative(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ā";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ē";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      if (this.second == "facere"){
+        return "fac";
+      } else {
+      return this.second.slice(0,-3) + "e";
+      }
+    } else if (this.second.slice(-3,) == "ere"){
+        if (this.second == "ducere"){
+          return "duc";
+        } else if (this.second == "dicere"){
+          return "dic";
+        } else {
+          return this.second.slice(0,-3) + "e";
+        }
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "ī";
+    }
+  }
+
+  get imperativeSingTrans(){
+    let imperative = this.verb;
+    return imperative[0].toUpperCase() + imperative.substring(1) +  "!";
+  }
+
+
+
+  //PLURAL IMPERATIVE
+
+  get imperativePl(){
+    return this.plImperative();
+  }
+
+  plImperative(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "āte";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēte";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ite";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ite";
+    } else if(this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īte";
+    }
+  }
+
+  get imperativePlTrans(){
+    let imperative = this.verb;
+    return imperative[0].toUpperCase() + imperative.substring(1) +  ", ya'll!";
+  }
+
+  plImperativeTrans(){
+    return this.imperativePlTrans();
+  }
+
+
+
+
+  //FIRST SINGULAR PRESENT TENSE
+  get firstSingPres(){
+    return this.presFirstSing();
+  }
+
+  presFirstSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ō";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "eō";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iō";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ō";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iō";
+    }
+  }
+
+
+
+  get firstSingPresTrans(){
+    return this.presFirstSingTrans();
+  }
+
+  presFirstSingTrans(){
+    return "I " +  this.verb;
+  }
+
+  //FIRST SINGULAR PRESENT PASSIVE
+  get firstSingPresPass(){
+    return this.presFirstSingPass();
+  }
+
+  presFirstSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "or";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "eor";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ior";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "or";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "ior";
+    }
+  }
+
+
+
+  get firstSingPresPassTrans(){
+    return this.presFirstSingPassTrans();
+  }
+
+  presFirstSingPassTrans(){
+    return "I am " +  this.ppVerb;
+  }
+
+  //FIRST SINGULAR IMPERFECT PASSIVE
+  get firstSingImpPass(){
+    return this.presFirstSingImpPass();
+  }
+
+  impFirstSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābar";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbar";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbar";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbar";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbar";
+    }
+  }
+
+
+
+  get firstSingImpPassTrans(){
+    return this.impFirstSingPassTrans();
+  }
+
+  impFirstSingPassTrans(){
+    return "I was being " +  this.ppVerb;
+  }
+
+    //FIRST SINGULAR FUTURE PASSIVE
+  get firstSingFutPass(){
+    return this.presFirstSingFutPass();
+  }
+
+  futFirstSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābor";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbor";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iar";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ar";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iar";
+    }
+  }
+
+
+
+  get firstSingFutPassTrans(){
+    return this.futFirstSingPassTrans();
+  }
+
+  futFirstSingPassTrans(){
+    return "I will be " +  this.ppVerb;
+  }
+
+
+    //FIRST SINGULAR PERFECT PASSIVE TENSE
+get firstSingPerPass(){
+    return this.perPassFirstSing();
+  }
+
+   perPassFirstSing(){
+     return this.fourth + " sum";
+   }
+
+   get firstSingPerPassTrans(){
+     return this.perPassFirstSingTrans();
+   }
+
+   perPassFirstSingTrans(){
+     return "I was " +  this.ppVerb;
+   }
+
+     //FIRST SINGULAR PLUPERFECT PASSIVE TENSE
+get firstSingPluPass(){
+    return this.pluPassFirstSing();
+  }
+
+   pluPassFirstSing(){
+     return this.fourth + " eram";
+   }
+
+   get firstSingPluPassTrans(){
+     return this.pluPassFirstSingTrans();
+   }
+
+   pluPassFirstSingTrans(){
+     return "I had been " +  this.ppVerb;
+   }
+
+      //FIRST SINGULAR FUTURE PERFECT PASSIVE TENSE
+get firstSingFutPerPass(){
+    return this.futPerPassFirstSing();
+  }
+
+   futPerPassFirstSing(){
+     return this.fourth + " ero";
+   }
+
+   get firstSingFutPerPassTrans(){
+     return this.futPerPassFirstSingTrans();
+   }
+
+   futPerPassFirstSingTrans(){
+     return "I will have been " +  this.ppVerb;
+   }
+
+   
+
+
+
+  
+
+//SECOND SINGULAR PRESENT TENSE
+
+  get secondSingPres(){
+    return this.presSecondSing();
+  }
+
+
+  presSecondSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ās";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēs";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "is";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "is";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īs";
+    }
+  }
+
+  get secondSingPresTrans(){
+    return this.presSecondSingTrans();
+  }
+
+  presSecondSingTrans(){
+    return "You " +  this.verb;
+  }
+
+    //SECOND SINGULAR PRESENT PASSIVE
+  presSecondSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "āris";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēris";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "eris";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "eris";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īris";
+    }
+  }
+
+  get secondSingPresPassTrans(){
+    return this.presSecondSingPassTrans();
+  }
+
+  presSecondSingPassTrans(){
+    return "You are " +  this.ppVerb;
+  }
+
+  //SECOND SINGULAR IMPERFECT PASSIVE
+  get secondSingImpPass(){
+    return this.impSecondSingPass();
+  }
+
+  impSecondSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābaris";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbaris";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbaris";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbaris";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbaris";
+    }
+  }
+
+
+
+  get secondSingImpPassTrans(){
+    return this.impSecondSingPassTrans();
+  }
+
+  impSecondSingPassTrans(){
+    return "You were being " +  this.ppVerb;
+  }
+
+    //SECOND SINGULAR FUTURE PASSIVE
+  get secondSingFutPass(){
+    return this.futSecondSingPass();
+  }
+
+  futSecondSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "āberis";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēberis";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēris";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēris";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēris";
+    }
+  }
+
+
+
+  get secondSingFutPassTrans(){
+    return this.futSecondSingPassTrans();
+  }
+
+  futSecondSingPassTrans(){
+    return "You will be " +  this.ppVerb;
+  }
+
+
+     //SECOND SINGULAR PERFECT PASSIVE TENSE
+get secondSingPerPass(){
+    return this.perPassSecondSing();
+  }
+
+   perPassSecondSing(){
+     return this.fourth + " es";
+   }
+
+   get secondSingPerPassTrans(){
+     return this.perPassSecondSingTrans();
+   }
+
+   perPassSecondSingTrans(){
+     return "You were " +  this.ppVerb;
+   }
+
+   perPassSecondSingTrans(){
+     return "You were " +  this.ppVerb;
+   }
+
+
+     //SECOND SINGULAR PLUPERFECT PASSIVE TENSE
+get secondSingPluPass(){
+    return this.pluPassSecondSing();
+  }
+
+   pluPassSecondSing(){
+     return this.fourth + " eras";
+   }
+
+   get secondSingPluPassTrans(){
+     return this.pluPassSecondSingTrans();
+   }
+
+   pluPassSecondSingTrans(){
+     return "You had been " +  this.ppVerb;
+   }
+
+
+      //SECOND SINGULAR FUTURE PERFECT PASSIVE TENSE
+get secondSingFutPerPass(){
+    return this.futPerPassSecondSing();
+  }
+
+   futPerPassSecondSing(){
+     return this.fourth + " eris";
+   }
+
+   get secondSingFutPerPassTrans(){
+     return this.futPerPassSecondSingTrans();
+   }
+
+   futPerPassSecondSingTrans(){
+     return "You will have been " +  this.ppVerb;
+   }
+
+  
+
+  //THIRD SINGULAR PRESENT TENSE
+  get thirdSingPres(){
+    return this.presThirdSing();
+  }
+
+  presThirdSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "at";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "et";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "it";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "it";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "it";
+    }
+  }
+
+  get thirdSingPresTrans(){
+    return this.presThirdSingTrans();
+  }
+
+  presThirdSingTrans(){
+    return "He " + this.verb + "s";
+  }
+
+
+//THIRD SINGULAR PRESENT PASSIVE
+  get thirdSingPresPass(){
+    return this.presThirdSingPass();
+  }
+
+  presThirdSingPass(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ātur";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ētur";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "itur";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "itur";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "ītur";
+    }
+  }
+
+  get thirdSingPresPassTrans(){
+    return this.presThirdSingPassTrans();
+  }
+
+  presThirdSingPassTrans(){
+    return "She is being " + this.ppVerb;
+  }
+
+  //THIRD SINGULAR IMPERFECT PASSIVE
+  get thirdSingImpPass(){
+    return this.impThirdSingPass();
+  }     
+    impThirdSingPass(){
+        if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābatur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbatur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēbatur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēbatur";
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iēbatur";
+        }
+    }
+    get thirdSingImpPassTrans(){
+        return this.impThirdSingPassTrans();
+    }               
+    impThirdSingPassTrans(){
+        return "He was being " +  this.ppVerb;
+    }
+
+    //THIRD SINGULAR FUTURE PASSIVE
+    get thirdSingFutPass(){
+    return this.futThirdSingPass(); 
+    }
+    futThirdSingPass(){
+        if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābitur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbitur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iētur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ētur";
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iētur";
+        }
+    }   
+    get thirdSingFutPassTrans(){
+        return this.futThirdSingPassTrans();
+    }               
+    futThirdSingPassTrans(){
+        return "He will be " +  this.ppVerb;
+    }
+
+    //THIRD SINGULAR PERFECT PASSIVE TENSE
+get thirdSingPerPass(){
+    return this.perPassThirdSing();
+  }  
+   perPassThirdSing(){
+     return this.fourth + " est";
+   }   
+   get thirdSingPerPassTrans(){
+     return this.perPassThirdSingTrans();
+   }               
+   perPassThirdSingTrans(){
+     return "He was " +  this.ppVerb;
+   } 
+
+     //THIRD SINGULAR PLUPERFECT PASSIVE TENSE  
+get thirdSingPluPass(){
+    return this.pluPassThirdSing();
+  }  
+   pluPassThirdSing(){
+     return this.fourth + " erat";
+   }   
+   get thirdSingPluPassTrans(){
+     return this.pluPassThirdSingTrans();
+   }               
+   pluPassThirdSingTrans(){
+     return "He had been " +  this.ppVerb;
+   }
+        //THIRD SINGULAR FUTURE PERFECT PASSIVE TENSE
+get thirdSingFutPerPass(){
+    return this.futPerPassThirdSing();
+  }  
+   futPerPassThirdSing(){
+     return this.fourth + " erit";
+   }   
+   get thirdSingFutPerPassTrans(){
+     return this.futPerPassThirdSingTrans();
+   }               
+   futPerPassThirdSingTrans(){
+     return "He will have been " +  this.ppVerb;
+    }   
+
+
+
+
+
+  //FIRST PLURAL PRESENT TENSE
+
+  get firstPlPres(){
+    return this.presFirstPl();
+  }
+
+  presFirstPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "āmus";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēmus";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "imus";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "imus";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īmus";
+    }
+  }
+
+  get firstPlPresTrans(){
+    return this.presFirstPlTrans();
+  }
+
+  presFirstPlTrans(){
+    return "We " +  this.verb;
+  }
+
+  //FIRST PLURAL PRESENT PASSIVE
+  get firstPlPresPass(){
+    return this.presFirstPlPass();
+  }         
+    presFirstPlPass(){
+        if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "āmur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēmur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "imur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "imur";
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "īmur";
+        }
+    }   
+    get firstPlPresPassTrans(){
+        return this.presFirstPlPassTrans();
+    }               
+    presFirstPlPassTrans(){
+        return "We are being " +  this.ppVerb;
+    }       
+
+    //FIRST PLURAL IMPERFECT PASSIVE
+  get firstPlImpPass(){
+    return this.impFirstPlPass();
+  }         
+    impFirstPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābāmur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbāmur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēbāmur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēbāmur";
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iēbāmur";
+        }
+    }   
+    get firstPlImpPassTrans(){
+        return this.impFirstPlPassTrans();
+    }               
+    impFirstPlPassTrans(){
+        return "We were being " +  this.ppVerb;
+    }
+
+    //FIRST PLURAL FUTURE PASSIVE
+  get firstPlFutPass(){
+    return this.futFirstPlPass();
+  }         
+    futFirstPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābimur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbimur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēmur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēmur";    
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iēmur";
+        }
+    }   
+    get firstPlFutPassTrans(){
+        return this.futFirstPlPassTrans();
+    }               
+    futFirstPlPassTrans(){
+        return "We will be " +  this.ppVerb;
+    }
+
+    //FIRST PLURAL PERFECT PASSIVE TENSE
+get firstPlPerPass(){
+    return this.perPassFirstPl();
+  }  
+   perPassFirstPl(){
+     return this.fourth.slice(0,-2) + "i sumus";
+   }   
+   get firstPlPerPassTrans(){
+     return this.perPassFirstPlTrans();
+   }               
+   perPassFirstPlTrans(){
+     return "We were " +  this.ppVerb;;
+   }    
+
+     //FIRST PLURAL PLUPERFECT PASSIVE TENSE
+get firstPlPluPass(){
+    return this.pluPassFirstPl();
+  }  
+   pluPassFirstPl(){
+     return this.fourth.slice(0,-2) + "i eramus";
+   }   
+   get firstPlPluPassTrans(){
+     return this.pluPassFirstPlTrans();
+   }               
+   pluPassFirstPlTrans(){
+     return "We had been " +  this.ppVerb;
+   }
+        //FIRST PLURAL FUTURE PERFECT PASSIVE TENSE
+get firstPlFutPerPass(){
+    return this.futPerPassFirstPl();
+  }  
+   futPerPassFirstPl(){
+     return this.fourth.slice(0,-2) + "i erimus";
+   }   
+   get firstPlFutPerPassTrans(){
+     return this.futPerPassFirstPlTrans();
+   }               
+   futPerPassFirstPlTrans(){    
+     return "We will have been " +  this.ppVerb;
+    }   
+
+  //SECOND PLURAL PRESENT TENSE
+  get secondPlPres(){
+    return this.presSecondPl();
+  }
+
+  presSecondPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ātis";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ētis";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "itis";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "itis";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "ītis";
+    }
+  }
+
+  get secondPlPresTrans(){
+    return this.presSecondPlTrans();
+  }
+
+  presSecondPlTrans(){
+    return "Y'all " +  this.verb;
+  }
+
+  //SECOND PLURAL PRESENT PASSIVE
+  get secondPlPresPass(){
+    return this.presSecondPlPass();
+  }         
+    presSecondPlPass(){
+        if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "āminī";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēminī";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iminī";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iminī";   
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "īminī";
+        }
+    }   
+    get secondPlPresPassTrans(){
+        return this.presSecondPlPassTrans();
+    }               
+    presSecondPlPassTrans(){
+        return "Y'all are being " +  this.ppVerb;;
+    }       
+
+    //SECOND PLURAL IMPERFECT PASSIVE
+  get secondPlImpPass(){
+    return this.impSecondPlPass();
+  }         
+    impSecondPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābāminī";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbāminī";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēbāminī";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēbāminī";   
+    
+        } else if (this.second.slice(-3,) == "ire"){            
+        return this.second.slice(0,-3) + "ībāminī";
+        }
+    }
+    get secondPlImpPassTrans(){
+        return this.impSecondPlPassTrans();
+    }               
+    impSecondPlPassTrans(){
+        return "Y'all were being " +  this.ppVerb;
+    }
+
+    //SECOND PLURAL FUTURE PASSIVE
+  get secondPlFutPass(){
+    return this.futSecondPlPass();
+  }         
+    futSecondPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābiminī";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbiminī";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēminī";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēminī";   
+    
+        } else if (this.second.slice(-3,) == "ire"){            
+        return this.second.slice(0,-3) + "iēminī";
+        }
+    }   
+    get secondPlFutPassTrans(){
+        return this.futSecondPlPassTrans();
+    }               
+    futSecondPlPassTrans(){
+        return "Y'all will be " +  this.ppVerb;
+    }
+
+    //SECOND PLURAL PERFECT PASSIVE TENSE
+get secondPlPerPass(){
+    return this.perPassSecondPl();
+  }  
+   perPassSecondPl(){
+     return this.fourth.slice(0,-2) + "i estis";
+   }   
+   get secondPlPerPassTrans(){
+     return this.perPassSecondPlTrans();
+   }               
+   perPassSecondPlTrans(){
+     return "Y'all were " +  this.ppVerb;;
+   }    
+
+     //SECOND PLURAL PLUPERFECT PASSIVE TENSE           
+get secondPlPluPass(){
+    return this.pluPassSecondPl();
+  }  
+   pluPassSecondPl(){
+     return this.fourth.slice(0,-2) + "i eratis";
+   }   
+   get secondPlPluPassTrans(){
+     return this.pluPassSecondPlTrans();
+   }               
+   pluPassSecondPlTrans(){
+     return "Y'all had been " +  this.ppVerb;
+   }
+        //SECOND PLURAL FUTURE PERFECT PASSIVE TENSE
+get secondPlFutPerPass(){
+    return this.futPerPassSecondPl();
+  }  
+   futPerPassSecondPl(){
+     return this.fourth.slice(0,-2) + "i eritis";
+   }   
+   get secondPlFutPerPassTrans(){
+     return this.futPerPassSecondPlTrans();
+   }               
+   futPerPassSecondPlTrans(){    
+     return "Y'all will have been " +  this.ppVerb;;
+    }   
+
+
+  //THIRD PLURAL PRESENT TENSE
+
+  get thirdPlPres(){
+    return this.presThirdPl();
+  }
+
+  presThirdPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ant";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ent";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iunt";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "unt";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "īunt";
+    }
+  }
+
+  get thirdPlPresTrans(){
+    return this.presThirdPlTrans();
+  }
+
+  presThirdPlTrans(){
+    return "They " + this.verb;
+  }
+
+  //THIRD PLURAL PRESENT PASSIVE
+  get thirdPlPresPass(){
+    return this.presThirdPlPass();
+  }         
+    presThirdPlPass(){
+        if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "antur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "entur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iuntur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "untur";    
+    
+        } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iuntur";
+        }
+    }   
+    get thirdPlPresPassTrans(){
+        return this.presThirdPlPassTrans();
+    }               
+    presThirdPlPassTrans(){
+        return "They are being " +  this.ppVerb;
+    }
+    //THIRD PLURAL IMPERFECT PASSIVE
+  get thirdPlImpPass(){
+    return this.impThirdPlPass();
+  }         
+    impThirdPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābantur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbantur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēbantur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēbantur";  
+    
+        } else if (this.second.slice(-3,) == "ire"){            
+        return this.second.slice(0,-3) + "iēbantur";
+        }
+    }
+    get thirdPlImpPassTrans(){
+        return this.impThirdPlPassTrans();
+    }               
+    impThirdPlPassTrans(){
+        return "They were being " +  this.ppVerb;
+    }
+    //THIRD PLURAL FUTURE PASSIVE
+  get thirdPlFutPass(){
+    return this.futThirdPlPass();
+  }         
+    futThirdPlPass(){
+        if (this.second.slice(-3,) == "are"){       
+        return this.second.slice(0,-3) + "ābuntur";
+        } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbuntur";
+        } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēntur";
+        } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēntur";    
+    
+        } else if (this.second.slice(-3,) == "ire"){            
+        return this.second.slice(0,-3) + "iēntur";
+        }
+    }   
+    get thirdPlFutPassTrans(){
+        return this.futThirdPlPassTrans();
+    }               
+    futThirdPlPassTrans(){
+        return "They will be " +  this.ppVerb;;
+    }
+    //THIRD PLURAL PERFECT PASSIVE TENSE
+get thirdPlPerPass(){
+    return this.perPassThirdPl();
+  }  
+   perPassThirdPl(){
+     return this.fourth.slice(0,-2) + "i sunt";
+   }   
+   get thirdPlPerPassTrans(){
+     return this.perPassThirdPlTrans();
+   }        
+   
+   get thirdPlPerPassFem(){
+    return this.perPassThirdPlFem();
+  }  
+   perPassThirdPlFem(){
+     return this.fourth.slice(0,-2) + "ae sunt";
+   }   
+   get thirdPlPerPassTrans(){
+     return this.perPassThirdPlTrans();
+   }         
+   perPassThirdPlTrans(){
+     return "They were " +  this.ppVerb;;
+   }    
+
+     //THIRD PLURAL PLUPERFECT PASSIVE TENSE          
+get thirdPlPluPass(){
+    return this.pluPassThirdPl();
+  }  
+   pluPassThirdPl(){
+     return this.fourth.slice(0,-2) + "i erant";                
+    }       
+    get thirdPlPluPassTrans(){
+      return this.pluPassThirdPlTrans();                
+    }               
+
+    get thirdPlPluPassFem(){
+    return this.pluPassThirdPlFem();
+  }  
+   pluPassThirdPlFem(){
+     return this.fourth.slice(0,-2) + "ae erant";                
+    }       
+    get thirdPlPluPassTrans(){
+      return this.pluPassThirdPlTrans(); 
+    }
+
+   pluPassThirdPlTrans(){
+     return "They had been " +  this.ppVerb;;
+   }
+        //THIRD PLURAL FUTURE PERFECT PASSIVE TENSE
+get thirdPlFutPerPass(){
+    return this.futPerPassThirdPl();
+  }  
+   futPerPassThirdPl(){
+     return this.fourth.slice(0,-2) + "i erunt";
+   }  
+   
+   get thirdPlFutPerPassFem(){
+    return this.futPerPassThirdPlFem();
+  }  
+   futPerPassThirdPlFem(){
+     return this.fourth.slice(0,-2) + "ae erunt";
+   }  
+
+   get thirdPlFutPerPassTrans(){
+     return this.futPerPassThirdPlTrans();
+   }               
+   futPerPassThirdPlTrans(){    
+     return "They will have been " +  this.ppVerb;
+    }
+
+//imperfect
+
+  get firstSingImp(){
+   return this.impFirstSing();
+ }
+
+  impFirstSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābam";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbam";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbam";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbam";
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbam";
+    }
+  }
+
+
+
+  get firstSingImpTrans(){
+    return this.impFirstSingTrans();
+  }
+
+  impFirstSingTrans(){
+    return "I was " +  this.verbing;
+  }
+
+  get secondSingImp(){
+    return this.impSecondSing();
+  }
+
+  impSecondSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābās";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbās";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbās";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbās";
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbās";
+    }
+  }
+
+  get secondSingImpTrans(){
+    return this.impSecondSingTrans();
+  }
+
+  impSecondSingTrans(){
+    return "You were " +  this.verbing;
+  }
+
+  get thirdSingImp(){
+    return this.impThirdSing();
+  }
+
+  impThirdSing(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "abat";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbat";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbat";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbat";
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbat";
+    }
+  }
+
+  get thirdSingImpTrans(){
+    return this.impThirdSingTrans();
+  }
+
+  impThirdSingTrans(){
+    return "She was " +  this.verbing;
+  }
+
+  get firstPlImp(){
+    return this.impFirstPl();
+  }
+
+  impFirstPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābāmus";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbāmus";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbāmus";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbāmus";
+
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbāmus";
+    }
+  }
+
+  get firstPlImpTrans(){
+    return this.impFirstPlTrans();
+  }
+
+  impFirstPlTrans(){
+    return "We were " +  this.verbing;
+  }
+
+  get secondPlImp(){
+    return this.impSecondPl();
+  }
+
+  impSecondPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "ābātis";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbātis";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbātis";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbātis";
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbātis";
+    }
+  }
+
+  get secondPlImpTrans(){
+    return this.impSecondPlTrans();
+  }
+
+  impSecondPlTrans(){
+    return "Y'all were " +  this.verbing;
+  }
+
+
+  get thirdPlImp(){
+    return this.impThirdPl();
+  }
+
+  impThirdPl(){
+    if (this.second.slice(-3,) == "are"){
+      return this.second.slice(0,-3) + "abant";
+    } else if (this.second.slice(-3,) == "ēre"){
+      return this.second.slice(0,-3) + "ēbant";
+    } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "iēbant";
+    } else if (this.second.slice(-3,) == "ere"){
+      return this.second.slice(0,-3) + "ēbant";
+    } else if (this.second.slice(-3,) == "ire"){
+      return this.second.slice(0,-3) + "iēbant";
+    }
+  }
+
+  get thirdPlImpTrans(){
+    return this.impThirdPlTrans();
+  }
+
+  impThirdPlTrans(){
+    return "They were " +  this.verbing;
+  }
+
+  //future tense
+
+    get firstSingFut(){
+     return this.futFirstSing();
+   }
+
+    futFirstSing(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābō";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbō";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iam";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "am";
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iam";
+      }
+    }
+
+
+
+    get firstSingFutTrans(){
+      return this.futFirstSingTrans();
+    }
+
+    futFirstSingTrans(){
+      return "I will " +  this.verb;
+    }
+
+    get secondSingFut(){
+      return this.futSecondSing();
+    }
+
+    futSecondSing(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābis";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbis";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēs";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēs";
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iēs";
+      }
+    }
+
+    get secondSingFutTrans(){
+      return this.futSecondSingTrans();
+    }
+
+    futSecondSingTrans(){
+      return "You will " +  this.verb;
+    }
+
+    get thirdSingFut(){
+      return this.futThirdSing();
+    }
+
+    futThirdSing(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābit";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbit";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iet";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "et";
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iet";
+      }
+    }
+
+    get thirdSingFutTrans(){
+      return this.futThirdSingTrans();
+    }
+
+    futThirdSingTrans(){
+      return "She will " +  this.verb;
+    }
+
+    get firstPlFut(){
+      return this.futFirstPl();
+    }
+
+    futFirstPl(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābimus";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbimus";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iēmus";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ēmus";
+
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iēmus";
+      }
+    }
+
+    get firstPlFutTrans(){
+      return this.futFirstPlTrans();
+    }
+
+    futFirstPlTrans(){
+      return "We will " +  this.verb;
+    }
+
+    get secondPlFut(){
+      return this.futSecondPl();
+    }
+
+    futSecondPl(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābitis";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbitis";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "iētis";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ētis";
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "iētis";
+      }
+    }
+
+    get secondPlFutTrans(){
+      return this.futSecondPlTrans();
+    }
+
+    futSecondPlTrans(){
+      return "Y'all will " +  this.verb;
+    }
+
+
+    get thirdPlFut(){
+      return this.futThirdPl();
+    }
+
+    futThirdPl(){
+      if (this.second.slice(-3,) == "are"){
+        return this.second.slice(0,-3) + "ābunt";
+      } else if (this.second.slice(-3,) == "ēre"){
+        return this.second.slice(0,-3) + "ēbunt";
+      } else if (this.first.slice(-2,) == "io" && this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ient";
+      } else if (this.second.slice(-3,) == "ere"){
+        return this.second.slice(0,-3) + "ent";
+      } else if (this.second.slice(-3,) == "ire"){
+        return this.second.slice(0,-3) + "ient";
+      }
+    }
+
+    get thirdPlFutTrans(){
+      return this.futThirdPlTrans();
+    }
+
+    futThirdPlTrans(){
+      return "They will " +  this.verb;
+    }
+
+   //PERFECT tense
+
+   get firstSingPer(){
+    return this.perFirstSing();
+  }
+
+   perFirstSing(){
+     return this.third.slice(0,-1) + "ī";
+   }
+
+   get firstSingPerTrans(){
+     return this.perFirstSingTrans();
+   }
+
+   perFirstSingTrans(){
+     return "I " +  this.verbed;
+   }
+
+   get secondSingPer(){
+    return this.perSecondSing();
+  }
+
+   perSecondSing(){
+     return this.third.slice(0,-1) + "istī";
+   }
+
+   get secondSingPerTrans(){
+     return this.perSecondSingTrans();
+   }
+
+   perSecondSingTrans(){
+     return "You " +  this.verbed;
+   }
+
+   get thirdSingPer(){
+    return this.perThirdSing();
+  }
+
+   perThirdSing(){
+     return this.third.slice(0,-1) + "it";
+   }
+
+   get thirdSingPerTrans(){
+     return this.perThirdSingTrans();
+   }
+
+   perThirdSingTrans(){
+     return "He " + this.verbed;
+   }
+
+   get firstPlPer(){
+    return this.perFirstPl();
+  }
+
+   perFirstPl(){
+     return this.third.slice(0,-1) + "imus";
+   }
+
+   get firstPlPerTrans(){
+     return this.perFirstPlTrans();
+   }
+
+   perFirstPlTrans(){
+     return "We " +  this.verbed;
+   }
+
+   get secondPlPer(){
+    return this.perSecondPl();
+  }
+
+   perSecondPl(){
+     return this.third.slice(0,-1) + "istis";
+   }
+
+   get secondPlPerTrans(){
+     return this.perSecondPlTrans();
+   }
+
+   perSecondPlTrans(){
+     return "Y'all " +  this.verbed;
+   }
+
+   get thirdPlPer(){
+    return this.perThirdPl();
+  }
+
+   perThirdPl(){
+     return this.third.slice(0,-1) + "ērunt";
+   }
+
+   get thirdPlPerTrans(){
+     return this.perThirdPlTrans();
+   }
+
+   perThirdPlTrans(){
+     return "They " + this.verbed;
+   }
+
+   //PLUPERFECT getElementsByName
+
+   get firstSingPlu(){
+    return this.pluFirstSing();
+  }
+
+   pluFirstSing(){
+     return this.third.slice(0,-1) + "eram";
+   }
+
+   get firstSingPluTrans(){
+     return this.pluFirstSingTrans();
+   }
+
+   pluFirstSingTrans(){
+     return "I had " +  this.ppVerb;
+   }
+
+   get secondSingPlu(){
+    return this.pluSecondSing();
+  }
+
+   pluSecondSing(){
+     return this.third.slice(0,-1) + "eras";
+   }
+
+   get secondSingPluTrans(){
+     return this.pluSecondSingTrans();
+   }
+
+   pluSecondSingTrans(){
+     return "You had " +  this.ppVerb;
+   }
+
+   get thirdSingPlu(){
+    return this.pluThirdSing();
+  }
+
+   pluThirdSing(){
+     return this.third.slice(0,-1) + "erat";
+   }
+
+   get thirdSingPluTrans(){
+     return this.pluThirdSingTrans();
+   }
+
+   pluThirdSingTrans(){
+     return "She had " +  this.ppVerb;
+   }
+
+   get firstPlPlu(){
+    return this.pluFirstPl();
+  }
+
+   pluFirstPl(){
+     return this.third.slice(0,-1) + "eramus";
+   }
+
+   get firstPlPluTrans(){
+     return this.pluFirstPlTrans();
+   }
+
+   pluFirstPlTrans(){
+     return "We had " +  this.ppVerb;
+   }
+
+   get secondPlPlu(){
+    return this.pluSecondPl();
+  }
+
+   pluSecondPl(){
+     return this.third.slice(0,-1) + "eratis";
+   }
+
+   get secondPlPluTrans(){
+     return this.pluSecondPlTrans();
+   }
+
+   pluSecondPlTrans(){
+     return "Y'all had " +  this.ppVerb;
+   }
+
+   get thirdPlPlu(){
+    return this.pluThirdPl();
+  }
+
+   pluThirdPl(){
+     return this.third.slice(0,-1) + "erant";
+   }
+
+   get thirdPlPluTrans(){
+     return this.pluThirdPlTrans();
+   }
+
+   pluThirdPlTrans(){
+     return "They had " +  this.ppVerb;
+   }
+
+   //FUTURE PERFECT
+
+   get firstSingFutPer(){
+    return this.futPerFirstSing();
+  }
+
+   futPerFirstSing(){
+     return this.third.slice(0,-1) + "ero";
+   }
+
+   get firstSingFutPerTrans(){
+     return this.futPerFirstSingTrans();
+   }
+
+   futPerFirstSingTrans(){
+     return "I will have " +  this.ppVerb;
+   }
+
+   get secondSingFutPer(){
+    return this.futPerSecondSing();
+  }
+
+   futPerSecondSing(){
+     return this.third.slice(0,-1) + "eris";
+   }
+
+   get secondSingFutPerTrans(){
+     return this.futPerSecondSingTrans();
+   }
+
+   futPerSecondSingTrans(){
+     return "You will have " +  this.ppVerb;
+   }
+
+   get thirdSingFutPer(){
+    return this.futPerThirdSing();
+  }
+
+   futPerThirdSing(){
+     return this.third.slice(0,-1) + "erit";
+   }
+
+   get thirdSingFutPerTrans(){
+     return this.futPerThirdSingTrans();
+   }
+
+   futPerThirdSingTrans(){
+     return "She will have " +  this.ppVerb;
+   }
+
+   get firstPlFutPer(){
+    return this.futPerFirstPl();
+  }
+
+   futPerFirstPl(){
+     return this.third.slice(0,-1) + "erimus";
+   }
+
+   get firstPlFutPerTrans(){
+     return this.futPerFirstPlTrans();
+   }
+
+   futPerFirstPlTrans(){
+     return "We will have " +  this.ppVerb;
+   }
+
+   get secondPlFutPer(){
+    return this.futPerSecondPl();
+  }
+
+   futPerSecondPl(){
+     return this.third.slice(0,-1) + "eritis";
+   }
+
+   get secondPlFutPerTrans(){
+     return this.futPerSecondPlTrans();
+   }
+
+   futPerSecondPlTrans(){
+     return "Y'all will have " +  this.ppVerb;
+   }
+
+   get thirdPlFutPer(){
+    return this.futPerThirdPl();
+  }
+
+   futPerThirdPl(){
+     return this.third.slice(0,-1) + "erint";
+   }
+
+   get thirdPlFutPerTrans(){
+     return this.futPerThirdPlTrans();
+   }
+
+   futPerThirdPlTrans(){
+     return "They will have " +  this.ppVerb;
+   }
+
+}
+
+
+
+// Array to hold the new noun forms
+ var newNoun = [];
+ var newNoun2 = [];
+ var newNounArray = [];
+ var array = [];
+ var newVerb = [];
+
+var userInput1 = "";
+ var userInput2 = "";
+ var userArray = [];
+ var button = [];
+ var button1 = [];
+ var verb = [];
+ var passiveVerb= [];
+ var dativeVerb = [];
+ var verb3rdPlural = [];
+ 
+ var sub = [];
+ var subject = [];
+
+ //var subject2 = [];
+ var dirObj = [];
+ var directObject = [];
+
+ var randSingPlNouns = [];
+ //var directObject2 = [];
+ var indirectObject = [];
+ var possession = [];
+ var ablative = [];
+
+ //var ranNoun1 = new Noun(array[0][0], array[0][1], array[0][2], array[0][3], array[0][4]);
+ //var ranNoun2 = new Noun(array[1][0], array[1][1], array[1][2], array[1][3], array[1][4]) ;
+
+ 
+
+ var score = 0;
+ var randomIndex = 0;
+ var ranVerbIndex = 0;
+ var ranPasVbIndx = 0;
+ var ranVerb3rdPluralIndex = 0;
+ var ranSubjectIndex = 0;
+ var ranDirObjIndx = 0;
+ var ranIndirectObjectIndex = 0;
+ var ranPossessionIndex = 0;
+ var ranAblativeIndex = 0;
+ var ranNounIndx = 0;
+ var ranDatVerbIndex = 0;
+
+ var currentQuestion = 0;
+  
+
+ var questions = [];
+ var answer = "";
+ 
+ var answers = [];
+ var noun = [];
+ var animals = [];
+ var people = [];
+ var places = [];
+var things = [];
+
+
+ // VERBS
+
+ var wordList =[];
+ var ranVerbIndx = 0
+ //var ranVerb = new Verb(verbArray[0],verbArray[1],verbArray[2],verbArray[3],verbArray[4],verbArray[5],verbArray[6],verbArray[7]);
+ var verbArray = [];
+ var newVerbArray = [];
+ var newVAArray = [];
+ var ranVerb = ""; 
+ var newVerb1 = [];
+ var newVerb = new Verb(newVerbArray[0],newVerbArray[1],newVerbArray[2],newVerbArray[3],newVerbArray[4],newVerbArray[5],newVerbArray[6],newVerbArray[7]);
+    
+
+
+
+function shuffle(array){
+	var currentIndex = array.length;
+	var temporaryValue;
+
+	while (currentIndex > 0){
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex --;
+
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	}
+		return array;
+}
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  function startGame(){
+
+    
+    document.getElementById("btn2").style.display = "none";
+    document.getElementById("latinSentence").style.display = "none";
+
+    document.getElementById("errorMessage").innerHTML = "";
+    
+  document.getElementById("submitInstructions").innerHTML = "Click Question 1 to start the Game!";
+    //document.getElementById("submitInstructions").innerHTML = "";
+    document.getElementById("btn1").innerHTML = "Question " + (currentQuestion + 1);
+    document.getElementById("btn1").style.backgroundColor = "yellow";
+    document.getElementById("btn1").style.color = "black";
+    document.getElementById("btn1").onclick = function(){showQuestion() };
+    //document.getElementById("newNounTB").style.display = "none";
+    //document.getElementById("latinNoun").style.display = "none";
+    //document.getElementById("newNounTB2").style.display = "none";
+    //document.getElementById("latinNoun2").style.display = "none";
+    //console.log("Starting Game with Nouns: " + newNounArray);
+   
+  }
+
+  function capitalizeFirstLetter(string){
+      return string.charAt(0).toUpperCass() + string.slice(1);
+    }
+
+
+
+
+
+  function showQuestion(){
+
+    array = [["pater", "patris", "m", "father", "fathers"],["villa", "villae", "f", "house", "houses"]];
+    newVerbArray = [["do", "dare", "dedi","datus", "give", "giving", "gave", "given"]];
+    ranNoun1 = new Noun(array[0][0], array[0][1], array[0][2], array[0][3], array[0][4]);
+    ranNoun2 = new Noun(array[1][0], array[1][1], array[1][2], array[1][3], array[1][4]);
+    newVerb = new Verb(newVerbArray[0][0],newVerbArray[0][1],newVerbArray[0][2],newVerbArray[0][3],newVerbArray[0][4],newVerbArray[0][5],newVerbArray[0][6],newVerbArray[0][7]);
+
+
+    var wordList = [["amo", "amare", "amavi","amatus", "love", "loving", "loved", "loved"],["laudo", "laudare", "laudavi","laudatus", "praise", "praising", "praised", "praised"],["observo", "observare", "observavi","observatus", "observe", "observing", "observed", "observed"],["paro", "parare", "paravi","paratus", "prepare", "preparing", "prepared", "prepared"],["specto", "spectare", "spectavi","spectatus", "look at", "looking at", "looked at", "looked at"],["moveo", "movēre", "movi","motus", "move", "moving", "moved", "moved"],["moneo", "monēre", "monui","monitus", "warn", "warning", "warned", "warned"],["teneo", "tenēre", "tenui","tentus", "hold", "holding", "held", "held"],["terreo", "terrēre", "terrui","territus", "frighten", "frightening", "frightened", "frightened"],["duco", "ducere", "duxi","ductus", "lead", "leading", "led", "led"],["frango", "frangere", "frēgi","fractus", "break", "breaking", "broke", "broken"],["mitto", "mittere", "mīsi","missus", "send", "sending", "sent", "sent"],["capio", "capere", "cēpi","captus", "capture", "capturing", "captured", "captured"],["facio", "facere", "fēci","factus", "make", "making", "made", "made"],["audio", "audire", "audivi","auditus", "hear", "hearing","heard","heard"],["voco", "vocare", "vocavi","vocatus", "call", "calling", "called", "called"],["video", "vidēre", "vīdi","visus", "see", "seeing", "saw", "seen"]];
+            
+    //[["amo", "amare", "amavi","amatus", "love", "loving", "loved", "loved"],["do", "dare", "dedi","datus", "give", "giving", "gave", "given"],["laudo", "laudare", "laudavi","laudatus", "praise", "praising", "praised", "praised"],["observo", "observare", "observavi","observatus", "observe", "observing", "observed", "observed"],["paro", "parare", "paravi","paratus", "prepare", "preparing", "prepared", "prepared"],["specto", "spectare", "spectavi","spectatus", "look at", "looking at", "looked at","looked at"]];
+            
+    var i = Math.floor(Math.random() * wordList.length);
+
+    var verbArray = [wordList[i][0],wordList[i][1],wordList[i][2],wordList[i][3],wordList[i][4],wordList[i][5],wordList[i][6],wordList[i][7]];
+    console.log(wordList.length);
+
+    ranVerb = new Verb(verbArray[0],verbArray[1],verbArray[2],verbArray[3],verbArray[4],verbArray[5],verbArray[6],verbArray[7]);
+    
+    var animals = [["avis", "avis","f","bird","birds"],["mus", "muris","m","mouse","mice"],["leo", "leonis","m","lion","lions"],["bos", "bovis","m","ox","oxen"],["glis", "gliris","m","dormouse","dormice"],["canis", "canis","m","dog","dogs"],["ursa","ursae","f","bear","bears"],["lupa", "lupae","f","she-wolf","she-wolves"],["rana","ranae","f","frog","frogs"],["aquila","aquilae","f","eagle","eagles"],["lupus", "lupi","m","wolf","wolves"],["porcus", "porci","m","pig","pigs"],["equus", "equi","m","horse","horses"]];
+
+    var people = [["umbra","umbrae","f","ghost","ghosts"],["regina", "reginae","f","queen","queens"],["magistra", "magistrae","f","teacher","teachers"],["amicus","amici","m","friend","friends"],["vilicus", "vilici","m","overseer","overseers"],["puer","pueri","m","boy","boys"],["mater", "matris","f","mother","mothers"],["parens", "parentis","m","parent","parent"],["soror", "sororis","f","sister","sisters"],["caupo", "cauponis","m","innkeeper","innkeepers"],["mulier", "mulieris","f","woman","women"],["rex", "regis","m","king","kings"],["fur", "furis","m","thief","thieves"],["haruspex", "haruspicis","m","soothsayer","soothsayers"],["auriga", "aurigae","m","charioteer","charioteers"],["dea","deae","f","goddess","goddesses"],["pirata", "piratae","m","pirate","pirates"],["nauta","nautae","m","sailor","sailors"],["dominus", "domini","m","master","masters"],["mendicus", "mendici","m","beggar","beggars"],["libertus","liberti","m","freedman","freedmen"],["virgo", "virginis","f","maiden","maidens"],["frater", "fratris","m","brother","brothers"],["pater", "patris","m","father","fathers"],["amica","amicae","f","girl friend","girl friends"],["puella","puellae","f","girl","girls"],["agricola","agricolae","m","farmer","farmers"],["femina","feminae","f","woman","women"],["servus","servi","m","slave","slaves"],["vir", "viri","m","man","men"],["magister", "magistri","m","teacher","teachers"],["civis", "civis","m","citizen","citizen"],["custos", "custodis","m","guard","guards"],["infans", "infantis","m","infant","infants"],["captivus","captivi","m","captive","captives"],["filius","filii","m","son","sons"],["poeta","poetae","m","poet","poets"],["ancilla","ancillae","f","maid servant","maid servants"],["domina", "dominae","f","mistress","mistresses"],["captivus","captivi","m","captive","captives"],["filius","filii","m","son","sons"]];
+
+    var places = [["pons", "pontis","m","bridge","bridges"],["mons", "montis","m","mountain","mountains"],["litus", "litoris","n","shore","shores"],["caupona", "cauponae","f","inn","inn"],["fossa", "fossae","f","ditch","ditches"],["culina", "culinae","f","kitchen","kitchens"],["rosa","rosae","f","rose","roses"],["luna","lunae","f","moon","moons"],["stella","stellae","f","star","stars"],["unda", "undae","f","wave","waves"],["ara", "arae","f","altar","altars"],["piscina","piscinae","f","fishpond","fishponds"],["ianua","ianuae","f","door","doors"],["porta","portae","f","gate","gates"],["via","viae","f","street","streets"]["villa","villae","f","house","houses"],["silva","silvae","f","forest","forests"],["aqua","aquae","f","water","waters"],["casa", "casae","f","cottage","cottages"],["caupona", "cauponae","f","inn","inn"],["fossa", "fossae","f","ditch","ditches"],["culina", "culinae","f","kitchen","kitchens"]];
+    var things = [["lapis", "lapidis","m","stone","stones"],["navis", "navis","f","ship","ships"],["cena","cenae","f","dinner","dinners"],["toga","togae","f","toga","togas"],["tunica","tunicae","f","tunic","tunics"],["corona", "coronae","f","crown","crowns"],["flamma", "flammae","f","flame","flames"],["mensa", "mensae","f","table","tables"],["pecunia", "pecuniae","f","money","money"],["saxum", "saxi","n","rock","rocks"],["gladius", "gladii","m","sword","swords"],["telum", "teli","n","javelin","javelins"]];
+
+    var masPeople = [["amicus","amici","m","friend","friends"],["vilicus", "vilici","m","overseer","overseers"],["puer","pueri","m","boy","boys"],["parens", "parentis","m","parent","parent"],["caupo", "cauponis","m","innkeeper","innkeepers"],["rex", "regis","m","king","kings"],["fur", "furis","m","thief","thieves"],["haruspex", "haruspicis","m","soothsayer","soothsayers"],["auriga", "aurigae","m","charioteer","charioteers"],["pirata", "piratae","m","pirate","pirates"],["nauta","nautae","m","sailor","sailors"],["dominus", "domini","m","master","masters"],["mendicus", "mendici","m","beggar","beggars"],["libertus","liberti","m","freedman","freedmen"],["frater", "fratris","m","brother","brothers"],["pater", "patris","m","father","fathers"],["agricola","agricolae","m","farmer","farmers"],["servus","servi","m","slave","slaves"],["vir", "viri","m","man","men"],["magister", "magistri","m","teacher","teachers"],["civis", "civis","m","citizen","citizen"],["custos", "custodis","m","guard","guards"],["infans", "infantis","m","infant","infants"],["captivus","captivi","m","captive","captives"],["filius","filii","m","son","sons"],["poeta","poetae","m","poet","poets"],["captivus","captivi","m","captive","captives"],["filius","filii","m","son","sons"]];
+
+    var femPeople = [["umbra","umbrae","f","ghost","ghosts"],["regina", "reginae","f","queen","queens"],["magistra", "magistrae","f","teacher","teachers"],["mater", "matris","f","mother","mothers"],["soror", "sororis","f","sister","sisters"],["mulier", "mulieris","f","woman","women"],["dea ","deae ","f ","goddess ","goddesses"], ["virgo", "virginis","f","maiden","maidens"], ["amica", "amicae","f","girl friend","girl friends"], ["puella", "puellae","f","girl","girls"],  ["femina", "feminae","f","woman","women"], ["infans", "infantis ","f ","infant ","infants"],  ["ancilla", "ancillae", "f ", "maid servant", "maid servants"]];
+
+//ranAnimals = new Noun(animals[0][0], animals[0][1], animals[0][2], animals[0][3], animals[0][4]);
+var ranAnimIndx = Math.floor(Math.random() * animals.length);
+ranAnimals = new Noun(animals[ranAnimIndx][0], animals[ranAnimIndx][1], animals[ranAnimIndx][2], animals[ranAnimIndx][3], animals[ranAnimIndx][4]);
+
+
+
+
+var ranPeopleIndx = Math.floor(Math.random() * people.length);
+ranPeople = new Noun(people[ranPeopleIndx][0], people[ranPeopleIndx][1], people[ranPeopleIndx][2], people[ranPeopleIndx][3], people[ranPeopleIndx][4]);
+
+var ranMasPeopleIndx = Math.floor(Math.random() * masPeople.length);
+ranMasPeople = new Noun(masPeople[ranMasPeopleIndx][0], masPeople[ranMasPeopleIndx][1], masPeople[ranMasPeopleIndx][2], masPeople[ranMasPeopleIndx][3], masPeople[ranMasPeopleIndx][4]);
+
+var ranFemPeopleIndx = Math.floor(Math.random() * femPeople.length);
+ranFemPeople = new Noun(femPeople[ranFemPeopleIndx][0], femPeople[ranFemPeopleIndx][1], femPeople[ranFemPeopleIndx][2], femPeople[ranFemPeopleIndx][3], femPeople[ranFemPeopleIndx][4]);
+
+var ranPlaceIndx = Math.floor(Math.random() * places.length);
+ranPlaces = new Noun(places[ranPlaceIndx][0], places[ranPlaceIndx][1], places[ranPlaceIndx][2], places[ranPlaceIndx][3], places[ranPlaceIndx][4]);
+
+var ranThingIndx = Math.floor(Math.random() * things.length);   
+ranThings = new Noun(things[ranThingIndx][0], things[ranThingIndx][1], things[ranThingIndx][2], things[ranThingIndx][3], things[ranThingIndx][4]);
+
+
+
+    document.getElementById("submitInstructions").style.display = "none";
+   
+
+   document.getElementById("errorMessage").innerHTML = "";
+    
+    document.getElementById("btn1").style.display = "none";
+
+    
+    subject = [ranNoun1.ablativeSing,ranNoun1.dativePl,ranNoun1.accusativeSing,ranNoun1.nominativePl,ranNoun1.ablativeSingTrans,ranNoun1.dativePlTrans,ranNoun1.accusativeSingTrans,ranNoun1.nominativePlTrans];
+    
+
+    
+    console.log(subject);
+
+    directObject =[ranNoun2.genitivePl, ranNoun2.nominativePl,ranNoun2.ablativeSing, ranNoun2.accusativeSing,ranNoun2.genitivePlTrans, ranNoun2.nominativePlTrans,ranNoun2.ablativeSingTrans, ranNoun2.accusativeSingTrans];
+  
+
+   
+    console.log(directObject[0]);
+   
+    
+   verb = [["amo", "I love"],["vides","You see"], ["regit", "He/She/It rules"], ["capimus", "We capture"],["auditis", "Y'all hear"], ["spectant", "They look at"]];
+   ranVerbIndex = Math.floor(Math.random() * verb.length);
+
+   dativeVerb = [["do", "I give"],["demonstras","You show"], ["dat", "He/She/It gives"], ["demonstramus", "We show"],["narratis", "Y'all tell"], ["narrant", "They tell"]];
+   ranDatVerbIndex = Math.floor(Math.random() * dativeVerb.length);
+
+   passiveVerb = [["amatur", "is loved"],["videtur","is seen"], ["regitur", "is ruled"], ["capitur", "is captured"],["auditur", "is heard"], ["spectatur", "is looked at"]];
+   ranPasVbIndx = Math.floor(Math.random() * passiveVerb.length);
+
+   verb3rdPlural = [["amant", "love"],["vident","see"], ["regunt", "rule"], ["capiunt", "capture"],["audiunt", "hear"], ["spectant", "look at"]];
+   ranVerb3rdPluralIndex = Math.floor(Math.random() * verb3rdPlural.length);
+
+   noun = [subject,directObject];
+   ranNounIndx = Math.floor(Math.random() * noun.length);
+   console.log(ranNounIndx);
+    console.log(noun[ranNounIndx][7]);
+
+//Active Verb Forms
+    ranVerbArray1 = [{verb:ranVerb.presFirstSing(), verbTrans:ranVerb.presFirstSingTrans()},  {verb:ranVerb.futFirstSing(), verbTrans: ranVerb.futFirstSingTrans()}, {verb:ranVerb.impFirstSing(), verbTrans: ranVerb.impFirstSingTrans()},{verb:ranVerb.perFirstSing(), verbTrans: ranVerb.perFirstSingTrans()},{verb:ranVerb.pluFirstSing(), verbTrans: ranVerb.pluFirstSingTrans()},{verb:ranVerb.futPerFirstSing(), verbTrans: ranVerb.futPerFirstSingTrans()}];
+    shuffle(ranVerbArray1);
+
+    ranVerbArray2 = [{verb:ranVerb.presSecondSing(), verbTrans:ranVerb.presSecondSingTrans()}, {verb:ranVerb.futSecondSing(), verbTrans: ranVerb.futSecondSingTrans()}, {verb:ranVerb.impSecondSing(), verbTrans: ranVerb.impSecondSingTrans()},{verb:ranVerb.perSecondSing(), verbTrans: ranVerb.perSecondSingTrans()}, {verb:ranVerb.pluSecondSing(), verbTrans: ranVerb.pluSecondSingTrans()},{verb:ranVerb.futPerSecondSing(), verbTrans: ranVerb.futPerSecondSingTrans()}];
+    shuffle(ranVerbArray2);
+
+    ranVerbArray3 = [{verb:ranVerb.presThirdSing(), verbTrans:ranVerb.presThirdSingTrans()}, {verb:ranVerb.futThirdSing(), verbTrans: ranVerb.futThirdSingTrans()}, {verb:ranVerb.impThirdSing(), verbTrans: ranVerb.impThirdSingTrans()},{verb:ranVerb.perThirdSing(), verbTrans: ranVerb.perThirdSingTrans()}, {verb:ranVerb.pluThirdSing(), verbTrans: ranVerb.pluThirdSingTrans()},{verb:ranVerb.futPerThirdSing(), verbTrans: ranVerb.futPerThirdSingTrans()}];
+    shuffle(ranVerbArray3);
+
+   ranVerbArray4 = [{verb:ranVerb.presFirstPl(), verbTrans:ranVerb.presFirstPlTrans()},  {verb:ranVerb.futFirstPl(), verbTrans: ranVerb.futFirstPlTrans()}, {verb:ranVerb.impFirstPl(), verbTrans: ranVerb.impFirstPlTrans()},{verb:ranVerb.perFirstPl(), verbTrans: ranVerb.perFirstPlTrans()},{verb:ranVerb.pluFirstPl(), verbTrans: ranVerb.pluFirstPlTrans()},{verb:ranVerb.futPerFirstPl(), verbTrans: ranVerb.futPerFirstPlTrans()}];
+    shuffle(ranVerbArray4);
+
+    ranVerbArray5 = [{verb:ranVerb.presSecondPl(), verbTrans:ranVerb.presSecondPlTrans()},  {verb:ranVerb.futSecondPl(), verbTrans: ranVerb.futSecondPlTrans()}, {verb:ranVerb.impSecondPl(), verbTrans: ranVerb.impSecondPlTrans()},{verb:ranVerb.perSecondPl(), verbTrans: ranVerb.perSecondPlTrans()},{verb:ranVerb.pluSecondPl(), verbTrans: ranVerb.pluSecondPlTrans()},{verb:ranVerb.futPerSecondPl(), verbTrans: ranVerb.futPerSecondPlTrans()}];
+    shuffle(ranVerbArray5);
+
+    ranVerbArray6 = [{verb:ranVerb.presThirdPl(), verbTrans:ranVerb.presThirdPlTrans()},  {verb:ranVerb.futThirdPl(), verbTrans: ranVerb.futThirdPlTrans()}, {verb:ranVerb.impThirdPl(), verbTrans: ranVerb.impThirdPlTrans()},{verb:ranVerb.perThirdPl(), verbTrans: ranVerb.perThirdPlTrans()},{verb:ranVerb.pluThirdPl(), verbTrans: ranVerb.pluThirdPlTrans()},{verb:ranVerb.futPerThirdPl(), verbTrans: ranVerb.futPerThirdPlTrans()}];
+    shuffle(ranVerbArray6);
+
+//Passive Verb Forms
+    ranPassiveVerbArray1 = [{verb:ranVerb.presFirstSingPass(), verbTrans:ranVerb.presFirstSingPassTrans()},  {verb:ranVerb.futFirstSingPass(), verbTrans: ranVerb.futFirstSingPassTrans()}, {verb:ranVerb.impFirstSingPass(), verbTrans: ranVerb.impFirstSingPassTrans()},{verb:ranVerb.perPassFirstSing(), verbTrans: ranVerb.perPassFirstSingTrans()},{verb:ranVerb.pluPassFirstSing(), verbTrans: ranVerb.pluPassFirstSingTrans()},{verb:ranVerb.futPerPassFirstSing(), verbTrans: ranVerb.futPerPassFirstSingTrans()}];
+    shuffle(ranPassiveVerbArray1);
+
+    ranPassiveVerbArray2 = [{verb:ranVerb.presSecondSingPass(), verbTrans:ranVerb.presSecondSingPassTrans()},  {verb:ranVerb.futSecondSingPass(), verbTrans: ranVerb.futSecondSingPassTrans()}, {verb:ranVerb.impSecondSingPass(), verbTrans: ranVerb.impSecondSingPassTrans()},{verb:ranVerb.perPassSecondSing(), verbTrans: ranVerb.perPassSecondSingTrans()},{verb:ranVerb.pluPassSecondSing(), verbTrans: ranVerb.pluPassSecondSingTrans()},{verb:ranVerb.futPerPassSecondSing(), verbTrans: ranVerb.futPerPassSecondSingTrans()}];
+    shuffle(ranPassiveVerbArray2);
+
+    ranPassiveVerbArray3 = [{verb:ranVerb.presThirdSingPass(), verbTrans:ranVerb.presThirdSingPassTrans()},  {verb:ranVerb.futThirdSingPass(), verbTrans: ranVerb.futThirdSingPassTrans()}, {verb:ranVerb.impThirdSingPass(), verbTrans: ranVerb.impThirdSingPassTrans()},{verb:ranVerb.perPassThirdSing(), verbTrans: ranVerb.perPassThirdSingTrans()},{verb:ranVerb.pluPassThirdSing(), verbTrans: ranVerb.pluPassThirdSingTrans()},{verb:ranVerb.futPerPassThirdSing(), verbTrans: ranVerb.futPerPassThirdSingTrans()}];
+    shuffle(ranPassiveVerbArray3);
+
+    ranPassiveVerbArray4 = [{verb:ranVerb.presFirstPlPass(), verbTrans:ranVerb.presFirstPlPassTrans()},  {verb:ranVerb.futFirstPlPass(), verbTrans: ranVerb.futFirstPlPassTrans()}, {verb:ranVerb.impFirstPlPass(), verbTrans: ranVerb.impFirstPlPassTrans()},{verb:ranVerb.perPassFirstPl(), verbTrans: ranVerb.perPassFirstPlTrans()},{verb:ranVerb.pluPassFirstPl(), verbTrans: ranVerb.pluPassFirstPlTrans()},{verb:ranVerb.futPerPassFirstPl(), verbTrans: ranVerb.futPerPassFirstPlTrans()}]; 
+    shuffle(ranPassiveVerbArray4);
+
+    ranPassiveVerbArray5 = [{verb:ranVerb.presSecondPlPass(), verbTrans:ranVerb.presSecondPlPassTrans()},  {verb:ranVerb.futSecondPlPass(), verbTrans: ranVerb.futSecondPlPassTrans()}, {verb:ranVerb.impSecondPlPass(), verbTrans: ranVerb.impSecondPlPassTrans()},{verb:ranVerb.perPassSecondPl(), verbTrans: ranVerb.perPassSecondPlTrans()},{verb:ranVerb.pluPassSecondPl(), verbTrans: ranVerb.pluPassSecondPlTrans()},{verb:ranVerb.futPerPassSecondPl(), verbTrans: ranVerb.futPerPassSecondPlTrans()}];
+    shuffle(ranPassiveVerbArray5);
+
+    ranPassiveVerbArray6 = [{verb:ranVerb.presThirdPlPass(), verbTrans:ranVerb.presThirdPlPassTrans()},  {verb:ranVerb.futThirdPlPass(), verbTrans: ranVerb.futThirdPlPassTrans()}, {verb:ranVerb.impThirdPlPass(), verbTrans: ranVerb.impThirdPlPassTrans()},{verb:ranVerb.perPassThirdPl(), verbTrans: ranVerb.perPassThirdPlTrans()},{verb:ranVerb.pluPassThirdPl(), verbTrans: ranVerb.pluPassThirdPlTrans()},{verb:ranVerb.futPerPassThirdPl(), verbTrans: ranVerb.futPerPassThirdPlTrans()}];
+    shuffle(ranPassiveVerbArray6);
+
+   
+
+    //load questions here
+    questions = [
+      {
+      question:  Object.values(ranVerbArray1[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray1[1])[1], Object.values(ranVerbArray1[2])[1], Object.values(ranVerbArray1[3])[1], Object.values(ranVerbArray1[0])[1]],
+      answer: Object.values(ranVerbArray1[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray1[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranVerbArray2[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray2[1])[1], Object.values(ranVerbArray2[2])[1], Object.values(ranVerbArray2[3])[1], Object.values(ranVerbArray2[0])[1]],
+      answer: Object.values(ranVerbArray2[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray2[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranVerbArray3[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray3[1])[1], Object.values(ranVerbArray3[2])[1], Object.values(ranVerbArray3[3])[1], Object.values(ranVerbArray3[0])[1]],
+      answer: Object.values(ranVerbArray3[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray3[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranVerbArray4[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray4[1])[1], Object.values(ranVerbArray4[2])[1], Object.values(ranVerbArray4[3])[1], Object.values(ranVerbArray4[0])[1]],
+      answer: Object.values(ranVerbArray4[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray4[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranVerbArray5[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray5[1])[1], Object.values(ranVerbArray5[2])[1], Object.values(ranVerbArray5[3])[1], Object.values(ranVerbArray5[0])[1]],
+      answer: Object.values(ranVerbArray5[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray5[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranVerbArray6[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranVerbArray6[1])[1], Object.values(ranVerbArray6[2])[1], Object.values(ranVerbArray6[3])[1], Object.values(ranVerbArray6[0])[1]],
+      answer: Object.values(ranVerbArray6[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray6[0])[1].toUpperCase(),
+      },
+
+      {
+      question:  Object.values(ranPassiveVerbArray1[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray1[1])[1], Object.values(ranPassiveVerbArray1[2])[1], Object.values(ranPassiveVerbArray1[3])[1], Object.values(ranPassiveVerbArray1[0])[1]],
+      answer: Object.values(ranPassiveVerbArray1[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray1[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranPassiveVerbArray2[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray2[1])[1], Object.values(ranPassiveVerbArray2[2])[1], Object.values(ranPassiveVerbArray2[3])[1], Object.values(ranPassiveVerbArray2[0])[1]],
+      answer: Object.values(ranPassiveVerbArray2[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray2[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranPassiveVerbArray3[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray3[1])[1], Object.values(ranPassiveVerbArray3[2])[1], Object.values(ranPassiveVerbArray3[3])[1], Object.values(ranPassiveVerbArray3[0])[1]],
+      answer: Object.values(ranPassiveVerbArray3[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray3[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranPassiveVerbArray4[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray4[1])[1], Object.values(ranPassiveVerbArray4[2])[1], Object.values(ranPassiveVerbArray4[3])[1], Object.values(ranPassiveVerbArray4[0])[1]],
+      answer: Object.values(ranPassiveVerbArray4[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray4[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranPassiveVerbArray5[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray5[1])[1], Object.values(ranPassiveVerbArray5[2])[1], Object.values(ranPassiveVerbArray5[3])[1], Object.values(ranPassiveVerbArray5[0])[1]],
+      answer: Object.values(ranPassiveVerbArray5[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray5[0])[1].toUpperCase(),
+      },
+      {
+      question:  Object.values(ranPassiveVerbArray6[0])[0].toUpperCase() + " =  __________________",
+      choices: [Object.values(ranPassiveVerbArray6[1])[1], Object.values(ranPassiveVerbArray6[2])[1], Object.values(ranPassiveVerbArray6[3])[1], Object.values(ranPassiveVerbArray6[0])[1]],
+      answer: Object.values(ranPassiveVerbArray6[0])[0].toUpperCase() + " = " + Object.values(ranPassiveVerbArray6[0])[1].toUpperCase(),
+      },
+      {
+      question: ranPeople.accusativeSing + " " + Object.values(ranVerbArray1[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray1[1])[1], Object.values(ranVerbArray1[2])[1], Object.values(ranVerbArray1[3])[1], Object.values(ranVerbArray1[0])[1]],
+      answer: ranPeople.accusativeSing + " " + Object.values(ranVerbArray1[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray1[0])[1].toUpperCase() + " the " + ranPeople.accusativeSingTrans,
+      },
+      {
+      question: ranThings.accusativeSing + " " + Object.values(ranVerbArray2[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray2[1])[1], Object.values(ranVerbArray2[2])[1], Object.values(ranVerbArray2[3])[1], Object.values(ranVerbArray2[0])[1]],
+      answer: ranThings.accusativeSing + " " + Object.values(ranVerbArray2[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray2[0])[1].toUpperCase() + " the " + ranThings.accusativeSingTrans,
+      },
+      {
+      question: ranPeople.accusativeSing + " " + Object.values(ranVerbArray3[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray3[1])[1], Object.values(ranVerbArray3[2])[1], Object.values(ranVerbArray3[3])[1], Object.values(ranVerbArray3[0])[1]],
+      answer: ranPeople.accusativeSing + " " + Object.values(ranVerbArray3[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray3[0])[1].toUpperCase() + " the " + ranPeople.accusativeSingTrans,
+      },
+      {
+      question: ranPeople.accusativeSing + " " + Object.values(ranVerbArray4[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray4[1])[1], Object.values(ranVerbArray4[2])[1], Object.values(ranVerbArray4[3])[1], Object.values(ranVerbArray4[0])[1]],
+      answer: ranPeople.accusativeSing + " " + Object.values(ranVerbArray4[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray4[0])[1].toUpperCase() + " the " + ranPeople.accusativeSingTrans,
+      },
+      {
+      question: ranPeople.accusativeSing + " " + Object.values(ranVerbArray5[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray5[1])[1], Object.values(ranVerbArray5[2])[1], Object.values(ranVerbArray5[3])[1], Object.values(ranVerbArray5[0])[1]],
+      answer: ranPeople.accusativeSing + " " + Object.values(ranVerbArray5[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray5[0])[1].toUpperCase() + " the " + ranPeople.accusativeSingTrans,
+      },
+      {
+      question: ranThings.accusativeSing + " " + Object.values(ranVerbArray6[0])[0].toUpperCase() + " =  __________________ ",
+      choices: [Object.values(ranVerbArray6[1])[1], Object.values(ranVerbArray6[2])[1], Object.values(ranVerbArray6[3])[1], Object.values(ranVerbArray6[0])[1]],
+      answer: ranThings.accusativeSing + " " + Object.values(ranVerbArray6[0])[0].toUpperCase() + " = " + Object.values(ranVerbArray6[0])[1].toUpperCase() + " the " + ranThings.accusativeSingTrans,
+      }
+        
+    ];
+     
+      
+      console.log(currentQuestion);
+      
+    document.getElementById("submitInstructions").innerHTML = "";
+      
+      //document.getElementById("submitInstructions").innerHTML = "Click the correct button below to complete the sentence!";
+      document.getElementById("latinSentence").style.display = "block";
+     
+    
+    const questionText = document.getElementById("latinSentence");
+    questionText.textContent = questions[currentQuestion].question;
+
+    const choices = document.querySelectorAll(".choice");
+    choices.forEach((choice, index) => {
+      choice.textContent = questions[currentQuestion].choices[index]});
+
+    
+    let button = ["btnB1", "btnB2", "btnB3", "btnB4"]
+    let button1 = shuffle(button)
+     console.log(button1)
+
+
+    document.getElementById(button1[0]).style.display = "inline-block";
+    document.getElementById(button1[0]).style.backgroundColor = "yellow";
+    document.getElementById(button1[0]).style.color = "black";
+    document.getElementById(button1[0]).onclick = incorrectAnswer;
+    document.getElementById(button1[0]).innerHTML = questions[currentQuestion].choices[0];
+    //console.log(noun[0][ranDirObjIndx][2])
+    
+    console.log(button1[0])// This is bnt1
+
+    document.getElementById(button1[1]).style.display = "inline-block";
+    document.getElementById(button1[1]).style.backgroundColor = "yellow";
+    document.getElementById(button1[1]).style.color = "black";
+    document.getElementById(button1[1]).onclick = incorrectAnswer;
+    document.getElementById(button1[1]).innerHTML = questions[currentQuestion].choices[1];
+   
+    
+
+    document.getElementById(button1[3]).style.display = "inline-block";
+    document.getElementById(button1[3]).style.backgroundColor = "yellow";
+    document.getElementById(button1[3]).style.color = "black";
+    document.getElementById(button1[3]).onclick = incorrectAnswer;
+    document.getElementById(button1[3]).innerHTML = questions[currentQuestion].choices[2];
+
+    document.getElementById(button1[2]).style.display = "inline-block";
+    document.getElementById(button1[2]).style.backgroundColor = "yellow";
+    document.getElementById(button1[2]).style.color = "black";
+    document.getElementById(button1[2]).onclick = correctAnswer;
+    document.getElementById(button1[2]).innerHTML = questions[currentQuestion].choices[3];
+
+    document.getElementById("principalParts").innerHTML =  "Principal Parts: " + ranVerb.first + ", " + ranVerb.second + ", " + ranVerb.third + ", " + ranVerb.fourth + ", to " + ranVerb.verb;
+    document.getElementById("principalParts").style.display = "inline-block";
+    document.getElementById("btn1").style.backgroundColor = "grey";
+    document.getElementById("btn1").style.color = "white";
+    document.getElementById("btn1").style.display = "none";
+    console.log(ranVerb.first);
+   
+
+    console.log(questions.length) 
+    
+   
+   console.log(currentQuestion) 
+   
+   
+  
+}
+  
+
+
+  
+function correctAnswer(){
+  
+  score +=10;
+  document.getElementById("score").innerHTML = score;
+  console.log(score);
+  document.getElementById("submitInstructions").style.display = "block";
+
+ if (Number(currentQuestion +1) == questions.length){
+
+      document.getElementById("principalParts").style.display = "none";
+      document.getElementById("latinSentence").innerHTML = "Game Over! Click \"Yes\" if you want to play again!";
+      document.getElementById("submitInstructions").innerHTML = "Correct! " + questions[currentQuestion].answer;
+      document.getElementById("btn1").onclick = startGame;
+      
+      
+      document.getElementById("btn1").innerHTML = "Yes";
+      document.getElementById("btn1").style.display = "inline-block";
+      document.getElementById("btn1").style.backgroundColor = "yellow";
+      document.getElementById("btn1").style.color = "black";
+      document.getElementById("btnB1").style.display = "none";
+      document.getElementById("btnB2").style.display = "none";
+      document.getElementById("btnB3").style.display = "none";
+      document.getElementById("btnB4").style.display = "none";
+
+      document.getElementById("btn2").style.display = "inline-block";
+      document.getElementById("btn2").onclick = endGame;
+      document.getElementById("btn2").style.backgroundColor = "red";
+      document.getElementById("btn2").style.color = "white";
+
+      subject = [];
+      directObject = [];
+      questions = [];
+      currentQuestion = 0;
+      newNounArray = [];  
+    } else {
+    
+    console.log(currentQuestion);
+      console.log(questions.length);
+
+    
+    document.getElementById("principalParts").style.display = "none";
+
+    document.getElementById("submitInstructions").innerHTML = "Correct! " + questions[currentQuestion].answer;
+    document.getElementById("submitInstructions").style.backgroundColor = "lightgreen"; 
+    document.getElementById("submitInstructions").style.color = "black"; 
+    
+    
+    document.getElementById("btnA1").style.display = "none";
+    document.getElementById("btnA2").style.display = "none";
+    document.getElementById("btnA3").style.display = "none";
+    document.getElementById("btnA4").style.display = "none";
+
+    
+    document.getElementById("btn1").style.backgroundColor = "yellow";
+    document.getElementById("btn1").style.color = "black";
+    document.getElementById("btn1").onclick = showQuestion;
+    
+    
+     document.getElementById("latinSentence").innerHTML = "";
+     
+    document.getElementById("btn1").style.display = "inline-block";
+
+    document.getElementById("btnB1").style.display = "none";
+    document.getElementById("btnB2").style.display = "none";
+    document.getElementById("btnB3").style.display = "none";
+    document.getElementById("btnB4").style.display = "none";
+  
+    
+    currentQuestion++;
+    document.getElementById("btn1").innerHTML = "Question " + Number(currentQuestion + 1);
+    //document.getElementById("latinSentence").innerHTML = "For Question " + Number(currentQuestion + 1) + ", click the button below to continue.";
+  document.getElementById("latinSentence").style.display = "none";
+  
+
+  var wordList = [["amo", "amare", "amavi","amatus", "love", "loving", "loved", "loved"],["laudo", "laudare", "laudavi","laudatus", "praise", "praising", "praised", "praised"],["observo", "observare", "observavi","observatus", "observe", "observing", "observed", "observed"],["paro", "parare", "paravi","paratus", "prepare", "preparing", "prepared", "prepared"],["specto", "spectare", "spectavi","spectatus", "look at", "looking at", "looked at", "looked at"],["moveo", "movēre", "movi","motus", "move", "moving", "moved", "moved"],["moneo", "monēre", "monui","monitus", "warn", "warning", "warned", "warned"],["teneo", "tenēre", "tenui","tentus", "hold", "holding", "held", "held"],["terreo", "terrēre", "terrui","territus", "frighten", "frightening", "frightened", "frightened"],["duco", "ducere", "duxi","ductus", "lead", "leading", "led", "led"],["frango", "frangere", "frēgi","fractus", "break", "breaking", "broke", "broken"],["mitto", "mittere", "mīsi","missus", "send", "sending", "sent", "sent"],["capio", "capere", "cēpi","captus", "capture", "capturing", "captured", "captured"],["facio", "facere", "fēci","factus", "make", "making", "made", "made"],["audio", "audire", "audivi","auditus", "hear", "hearing","heard","heard"],["voco", "vocare", "vocavi","vocatus", "call", "calling", "called", "called"],["video", "vidēre", "vīdi","visus", "see", "seeing", "saw", "seen"]];
+    
+  var i = Math.floor(Math.random() * wordList.length);
+
+    var verbArray = [wordList[i][0],wordList[i][1],wordList[i][2],wordList[i][3],wordList[i][4],wordList[i][5],wordList[i][6],wordList[i][7]];
+    console.log(wordList.length);
+
+    ranVerb = new Verb(verbArray[0],verbArray[1],verbArray[2],verbArray[3],verbArray[4],verbArray[5],verbArray[6],verbArray[7]);
+    
+    
+} 
+  
+}
+
+    
+    
+    
+    
+   
+
+  
+
+  
+  
+function incorrectAnswer(){
+  document.getElementById("submitInstructions").style.display = "block";
+  document.getElementById("submitInstructions").innerHTML = "Oops! Try again!";
+  document.getElementById("submitInstructions").style.backgroundColor = "red";
+  document.getElementById("submitInstructions").style.color = "white";
+  score-=5;
+  document.getElementById("score").innerHTML = score;
+}
+
+
+
+function endGame(){
+  document.getElementById("submitInstructions").innerHTML = "Thanks for playing!";
+  document.getElementById("latinSentence").style.display = "none";
+  document.getElementById("btn1").style.display = "none";
+  document.getElementById("btn2").style.display = "none";
+}
+
+
+ </script>
+
+  
+
+
+
+
+
+
+</body>
