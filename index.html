@@ -377,8 +377,7 @@ class Noun {
     } else if (this.genitive.slice(-2,) == "is"){
         if (this.nominative == "canis"){
             return this.genitive.slice(0,-2) + "um";
-        } else if (this.nominative.slice(-2,) == "rb" || this.nominative.slice(-2,) == "nt" || this.nominative.slice(-2,) == "rt"){
-        // if (this.nominative.slice(-2,) == "rb" || "nt" || "rt"){
+        } else if (this.nominative.slice(-2,) == "bs" || this.nominative.slice(-2,) == "ns" || this.nominative.slice(-2,) == "rs"){
           return this.genitive.slice(0,-2) + "ium";
         } else if (this.gender == "n"){
             if (this.nominative.slice(-2,) == "re" || this.nominative.slice(-2,) == "al"){
